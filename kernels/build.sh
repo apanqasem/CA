@@ -46,6 +46,10 @@ while [ $# -gt 0 ]; do
 			mode="$2"
 			shift
 			;;
+		-t|--tile)
+			tile="$2"
+			shift
+			;;
     -l|--layout)
       layout="$2"
       shift
@@ -85,10 +89,6 @@ while [ $# -gt 0 ]; do
 			coarsen="$2"
 			shift
 			;;
-		-x|--tile)
-			tile="$2"
-			shift
-			;;
     *)
 			echo "Unknown option:" $key
 			exit 0
@@ -98,8 +98,9 @@ while [ $# -gt 0 ]; do
 done
 
 [ "$mode" ] || { mode="build";} 
-[ "$prog" ] || { mode="2dconv";} 
+[ "$prog" ] || { prog="2dconv";} 
 [ "$layout" ] || { layout="DEFAULT"; }
+[ "$tile" ] || { tile="4";} 
 
 
 EXEC=$prog
@@ -121,14 +122,16 @@ PARAM_DEFS="-D${agent} -D${alloc} -D${convert} -D${layout} -D${verbose} -DMEM${m
             -DSPARSITY_VAL=${sparsity} -DUNROLL_VAL=${unroll} -DSWEEP_VAL=${sweeps} -DTILESIZE=${tile}\
             -DCOARSENFACTOR=${coarsen} -D${module_type}"
 
-PARAM_DEFS="-D${layout}"
+PARAM_DEFS="-D${layout} -DTILESIZE=${tile}"
 
 if [ $mode = "clean" ]; then
 	rm -f *~ *.o ${EXEC} 
 fi
 
 if [ $mode = "build" ]; then
-	echo "nvcc -O3 -arch sm_30 -ccbin g++ ${PARAM_DEFS} ${INCPATH} ${SRC} ${CA_OBJ} -o ${EXEC}"
+	echo "g++ -I ${CA_DIR} -c ${PARAM_DEFS} ${CA_DIR}/ca.c"
+	g++ -I ${CA_DIR} -c ${PARAM_DEFS} ${CA_DIR}/ca.c
+	echo "nvcc -O3 -arch sm_30 -ccbin g++ ${PARAM_DEFS} ${INCPATH} ${SRC} ${OBJS} -o ${EXEC}"
 	nvcc -O3 -arch sm_30 -ccbin g++ ${PARAM_DEFS} ${INCPATH} ${SRC} ${OBJS} -o ${EXEC}
 fi
 

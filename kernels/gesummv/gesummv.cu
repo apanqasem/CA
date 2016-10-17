@@ -10,6 +10,8 @@
 
 #include <unistd.h>
 #include <stdio.h>
+#include <time.h>
+#include <sys/time.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
@@ -54,8 +56,6 @@ typedef struct data_item_type {
 
 #define SPARSITY N
 
-#define TILEFACTOR 1
-#define TILE 4 //ITEMS_PER_REF_GROUP / TILEFACTOR    // Tile is a factor of ITEMS_PER_REF_GROUP
 
 
 void gesummv(DATA_TYPE *A, DATA_TYPE *B, DATA_TYPE *x, DATA_TYPE *y, DATA_TYPE *tmp) {
@@ -229,8 +229,8 @@ int main(int argc, char *argv[])
 	  aos[i].b = B[i];
 	}
 
-	convert_aos_to_ca(aos, ca, ITEMS, FIELDS, TILE, SPARSITY);
-	check_ca_conversion(A, ca, ITEMS, FIELDS, TILE, SPARSITY);
+	convert_aos_to_ca(aos, ca, ITEMS, FIELDS, SPARSITY);
+	check_ca_conversion(A, ca, ITEMS, FIELDS, SPARSITY);
 
 //	convert_aos_to_ca(aos, ca);
 

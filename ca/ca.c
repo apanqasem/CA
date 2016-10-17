@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include <ca.h>
 
-void check_ca_conversion(DATA_TYPE *A, DATA_TYPE *ca, unsigned int items, int fields, int tile, int sparsity) {
+unsigned int calc_tile_size(unsigned int items, int fields, int sparsity) {
+  return TILE;
+}
+void check_ca_conversion(DATA_TYPE *A, DATA_TYPE *ca, unsigned int items, int fields, int sparsity) {
 
   fprintf(stderr, "checking CA conversion...\n");
 
+  int tile = calc_tile_size(items, fields, sparsity);
   unsigned int items_per_ref_grp = items/sparsity;
   int num_ref_groups = 0;
   int base_top = 0;
@@ -49,8 +53,10 @@ void check_ca_conversion(DATA_TYPE *A, DATA_TYPE *ca, unsigned int items, int fi
   return;
 }
 
-void convert_aos_to_ca(void *aos_data, DATA_TYPE *ca, unsigned int items, int fields, int tile, int sparsity) {
+void convert_aos_to_ca(void *aos_data, DATA_TYPE *ca, unsigned int items, int fields, int sparsity) {
 
+
+  int tile = calc_tile_size(items, fields, sparsity);
   unsigned int items_per_ref_grp = items/sparsity;
   unsigned int ref_group_reset = items_per_ref_grp/tile;
 

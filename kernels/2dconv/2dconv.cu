@@ -49,8 +49,6 @@ typedef struct data_item_type {
 
 #define SPARSITY NI
 
-#define TILEFACTOR 1
-#define TILE 4 // ITEMS_PER_REF_GROUP / TILEFACTOR    // Tile is a factor of ITEMS_PER_REF_GROUP
 
 
 
@@ -248,8 +246,8 @@ int main(int argc, char *argv[])
 	  aos[i].a = A[i];
 	}
 
-	convert_aos_to_ca(aos, ca, ITEMS, FIELDS, TILE, SPARSITY);
-	check_ca_conversion(A, ca, ITEMS, FIELDS, TILE, SPARSITY);
+	convert_aos_to_ca(aos, ca, ITEMS, FIELDS, SPARSITY);
+	check_ca_conversion(A, ca, ITEMS, FIELDS, SPARSITY);
 
 	GPU_argv_init();
 
